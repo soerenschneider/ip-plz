@@ -36,10 +36,13 @@ jobs:
         with:
           images: ${{ env.GH_REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value={{ branch}}-{{date 'YYYYMMDDHHmmss'}}
+            type=schedule
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
             type=ref,event=branch
             type=ref,event=pr
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha
           
       - name: Build and push container image
         uses: docker/build-push-action@v3.3.0
