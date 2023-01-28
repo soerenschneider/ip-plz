@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"flag"
+	"fmt"
 	"github.com/caarlos0/env/v6"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -100,7 +102,18 @@ func serveMetrics(addr string) {
 	}
 }
 
+func conditionalPrintVersion() {
+	version := flag.Bool("version", false, "print version info")
+	flag.Parse()
+	if *version {
+		fmt.Println(BuildVersion)
+		os.Exit(0)
+	}
+}
+
 func main() {
+	conditionalPrintVersion()
+
 	log.Printf("ip-plz, version %s (%s)", BuildVersion, CommitHash)
 	conf := getDefaultConf()
 	if err := env.Parse(&conf); err != nil {
