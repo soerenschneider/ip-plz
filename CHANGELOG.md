@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/soerenschneider/ip-plz/compare/v1.0.0...v1.1.0) (2023-01-31)
+
+
+### Features
+
+* healthcheck endpoint ([cbbff0d](https://github.com/soerenschneider/ip-plz/commit/cbbff0db2e7aa6f1ea4273a1f50ea6adc990e49e))
+
 ## 1.0.0 (2023-01-28)
 
 
