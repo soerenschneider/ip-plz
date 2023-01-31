@@ -93,6 +93,10 @@ func (b *IpPlz) detectIp(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte(pubIp))
 }
 
+func (b *IpPlz) healthcheckHandler(w http.ResponseWriter, req *http.Request) {
+	w.Write([]byte("pong"))
+}
+
 func serveMetrics(addr string) {
 	log.Printf("Serving metrics at '%s'\n", addr)
 	http.Handle("/metrics", promhttp.Handler())
@@ -127,6 +131,7 @@ func main() {
 	ipPlz := NewIpPlz(conf.TrustedHeaders)
 	mux := http.NewServeMux()
 	mux.HandleFunc(conf.Path, ipPlz.detectIp)
+	mux.HandleFunc("/health", ipPlz.healthcheckHandler)
 
 	httpServer := &http.Server{
 		Addr:              conf.Address,
