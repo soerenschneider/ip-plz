@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/caarlos0/env/v6"
@@ -145,7 +146,7 @@ func main() {
 	go func() {
 		log.Printf("Starting server on '%s' at path '%s' using trusted headers '%v'\n", conf.Address, conf.Path, conf.TrustedHeaders)
 		err := httpServer.ListenAndServe()
-		if err != nil {
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatalf("could not start server: %v", err)
 		}
 	}()
