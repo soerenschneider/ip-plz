@@ -1,4 +1,4 @@
-FROM golang:1.20.3 as builder
+FROM golang:1.20.4 as builder
 ENV MODULE=github.com/soerenschneider/ip-plz
 WORKDIR /build/
 ADD . /build/
