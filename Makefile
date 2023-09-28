@@ -14,7 +14,7 @@ clean:
 	rm -rf ./$(BUILD_DIR)
 
 build: version-info
-	CGO_ENABLED=0 go build -ldflags="-X 'main.BuildVersion=${VERSION}' -X 'main.CommitHash=${COMMIT_HASH}'" -o $(BINARY_NAME) main.go
+	CGO_ENABLED=0 go build -ldflags="-w -X 'main.BuildVersion=${VERSION}' -X 'main.CommitHash=${COMMIT_HASH}'" -o $(BINARY_NAME) main.go
 
 release: clean version-info cross-build
 	cd $(BUILD_DIR) && sha256sum * > $(CHECKSUM_FILE) && cd -
@@ -24,8 +24,8 @@ signed-release: release
 	gh-upload-assets -o soerenschneider -r $(BINARY_NAME) -f ~/.gh-token builds
 
 cross-build:
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0       go build -ldflags="-X 'main.BuildVersion=${VERSION}' -X 'main.CommitHash=${COMMIT_HASH}'" -o $(BUILD_DIR)/$(BINARY_NAME)-linux-amd64   main.go
-	GOOS=linux GOARCH=arm64 CGO_ENABLED=0       go build -ldflags="-X 'main.BuildVersion=${VERSION}' -X 'main.CommitHash=${COMMIT_HASH}'" -o $(BUILD_DIR)/$(BINARY_NAME)-linux-aarch64 main.go
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0       go build -ldflags="-w -X 'main.BuildVersion=${VERSION}' -X 'main.CommitHash=${COMMIT_HASH}'" -o $(BUILD_DIR)/$(BINARY_NAME)-linux-amd64   main.go
+	GOOS=linux GOARCH=arm64 CGO_ENABLED=0       go build -ldflags="-w -X 'main.BuildVersion=${VERSION}' -X 'main.CommitHash=${COMMIT_HASH}'" -o $(BUILD_DIR)/$(BINARY_NAME)-linux-aarch64 main.go
 
 version-info:
 	$(eval VERSION := $(shell git describe --tags --abbrev=0 || echo "dev"))
