@@ -10,7 +10,9 @@ ip-plz is a tiny HTTP API that returns caller's public IP address
 
 ✉️ Returns the caller's **public** IP<br/>
 🔀 Reverse-proxy support with configurable trusted headers<br/>
-🪽 Lightweight and almost no dependencies<br/>
+📦 Zero configuration and works out of the box with secure defaults<br/>
+🪶 Lightweight and almost no dependencies<br/>
+🔭 Observability using metrics<br/>
 
 ## Installation
 
