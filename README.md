@@ -12,6 +12,8 @@ ip-plz is a tiny HTTP API that returns caller's public IP address
 🔀 Reverse-proxy support with configurable trusted headers<br/>
 🪽 Lightweight and almost no dependencies<br/>
 
+## Installation
+
 ### Docker / Podman
 ````shell
 $ docker run -d -p 8080:8080 ghcr.io/soerenschneider/ip-plz
