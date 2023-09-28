@@ -8,9 +8,9 @@ ip-plz is a tiny HTTP API that returns caller's public IP address
 
 ## Features
 
-✉️ Returns the public IP the HTTP request came from
-🔀 Reverse-proxy support with configurable allowed headers
-🪽 Lightweight and almost no dependencies
+✉️ Returns the caller's **public** IP<br/>
+🔀 Reverse-proxy support with configurable trusted headers<br/>
+🪽 Lightweight and almost no dependencies<br/>
 
 ## Configuration
 
@@ -26,7 +26,6 @@ ip-plz is configured via environment variables only. The following configuration
 | WriteTimeout      | int       | IP_PLZ_WRITE_TIMEOUT       | Maximum duration for writing the response back to the client, in seconds.                               | 1 second      |
 | IdleTimeout       | int       | IP_PLZ_IDLE_TIMEOUT        | Maximum duration the server should wait for the next request when no connections are active, in seconds. | 5 seconds     |
 | ReadHeaderTimeout | int       | IP_PLZ_READ_HEADER_TIMEOUT | Maximum duration for reading the request headers, in seconds.                                           | 2 seconds     |
-
 
 ## Metrics
 
