@@ -1,7 +1,7 @@
 # ip-plz
 [![Go Report Card](https://goreportcard.com/badge/github.com/soerenschneider/ip-plz)](https://goreportcard.com/report/github.com/soerenschneider/ip-plz)
 ![test-workflow](https://github.com/soerenschneider/ip-plz/actions/workflows/test.yaml/badge.svg)
-![release-workflow](https://github.com/soerenschneider/ip-plz/actions/workflows/release.yaml/badge.svg)
+![release-workflow](https://github.com/soerenschneider/ip-plz/actions/workflows/release-container.yaml/badge.svg)
 ![golangci-lint-workflow](https://github.com/soerenschneider/ip-plz/actions/workflows/golangci-lint.yaml/badge.svg)
 
 ip-plz is a tiny HTTP API that returns caller's public IP address
