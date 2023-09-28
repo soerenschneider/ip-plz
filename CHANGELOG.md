@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/soerenschneider/ip-plz/compare/v1.1.0...v1.1.1) (2023-09-28)
+
+
+### Bug Fixes
+
+* don't fatal after interrupting the server ([d5eb14d](https://github.com/soerenschneider/ip-plz/commit/d5eb14d49d10e52f48d1a6f6c801a7918cd48622))
+
 ## [1.1.0](https://github.com/soerenschneider/ip-plz/compare/v1.0.0...v1.1.0) (2023-01-31)
 
 
