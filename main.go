@@ -6,11 +6,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/caarlos0/env/v6"
@@ -36,10 +36,6 @@ var (
 	})
 )
 
-type IpPlz struct {
-	headers []string
-}
-
 type Conf struct {
 	MetricsAddr       string   `env:"IP_PLZ_METRICS_ADDR"`
 	Path              string   `env:"IP_PLZ_PATH"`
@@ -51,8 +47,8 @@ type Conf struct {
 	ReadHeaderTimeout int      `env:"IP_PLZ_READ_HEADER_TIMEOUT"`
 }
 
-func getDefaultConf() Conf {
-	return Conf{
+func defaultConf() *Conf {
+	return &Conf{
 		Path:              "/ip-plz",
 		Address:           ":8080",
 		MetricsAddr:       ":9191",
@@ -63,95 +59,23 @@ func getDefaultConf() Conf {
 	}
 }
 
-func NewIpPlz(trustedHeaders []string) *IpPlz {
-	return &IpPlz{
-		headers: trustedHeaders,
-	}
-}
-
-func (b *IpPlz) getIp(req *http.Request) string {
-	for _, h := range b.headers {
-		for _, ip := range strings.Split(req.Header.Get(h), ",") {
-			ip = strings.TrimSpace(ip)
-			parsedIp := net.ParseIP(ip)
-			if parsedIp != nil && parsedIp.IsGlobalUnicast() && !parsedIp.IsPrivate() {
-				return ip
-			}
-		}
-	}
-
-	host, _, err := net.SplitHostPort(req.RemoteAddr)
-	if err == nil {
-		return host
-	}
-
-	return req.RemoteAddr
-}
-
-func (b *IpPlz) detectIp(w http.ResponseWriter, req *http.Request) {
-	requestsTotal.Inc()
-	requestsTimestamp.SetToCurrentTime()
-	pubIp := b.getIp(req)
-	_, err := w.Write([]byte(pubIp))
-	if err != nil {
-		log.Printf("detectIp: error writing to writer: %v", err)
-	}
-}
-
-func (b *IpPlz) healthcheckHandler(w http.ResponseWriter, req *http.Request) {
-	_, err := w.Write([]byte("pong"))
-	if err != nil {
-		log.Printf("healthcheckHandler: error writing to writer: %v", err)
-	}
-}
-
-func serveMetrics(addr string) {
-	log.Printf("Serving metrics server at '%s'\n", addr)
-	mux := http.NewServeMux()
-	mux.Handle("/metrics", promhttp.Handler())
-	server := http.Server{
-		Addr:              addr,
-		Handler:           mux,
-		ReadTimeout:       2 * time.Second,
-		ReadHeaderTimeout: 2 * time.Second,
-		WriteTimeout:      2 * time.Second,
-		IdleTimeout:       2 * time.Second,
-	}
-
-	err := server.ListenAndServe()
-	if !errors.Is(err, http.ErrServerClosed) {
-		log.Fatalf("could not serve metrics: %v", err)
-	}
-}
-
-func conditionalPrintVersion() {
-	version := flag.Bool("version", false, "print version info")
-	flag.Parse()
-	if *version {
-		fmt.Println(BuildVersion)
-		os.Exit(0)
-	}
-}
-
-func main() {
-	conditionalPrintVersion()
-
-	log.Printf("ip-plz, version %s (%s)", BuildVersion, CommitHash)
-	conf := getDefaultConf()
-	if err := env.Parse(&conf); err != nil {
+func ParseConf() *Conf {
+	conf := defaultConf()
+	if err := env.Parse(conf); err != nil {
 		log.Fatalf("could not parse conf: %v", err)
 	}
+	return conf
+}
 
-	if len(conf.MetricsAddr) > 0 {
-		go serveMetrics(conf.MetricsAddr)
-	}
+func serveApp(ctx context.Context, wg *sync.WaitGroup, conf *Conf, ipPlz *IpPlz) {
+	log.Printf("Starting server on '%s' at path '%s' using trusted headers '%v'\n", conf.Address, conf.Path, conf.TrustedHeaders)
+	wg.Add(1)
 
-	ipPlz := NewIpPlz(conf.TrustedHeaders)
 	mux := http.NewServeMux()
 	mux.HandleFunc(conf.Path, ipPlz.detectIp)
 	mux.HandleFunc("/health", ipPlz.healthcheckHandler)
 
-	httpServer := &http.Server{
+	server := &http.Server{
 		Addr:              conf.Address,
 		Handler:           mux,
 		ReadTimeout:       time.Duration(conf.ReadTimeout) * time.Second,
@@ -160,12 +84,74 @@ func main() {
 		ReadHeaderTimeout: time.Duration(conf.ReadHeaderTimeout) * time.Second,
 	}
 
+	errChan := make(chan error)
 	go func() {
-		log.Printf("Starting server on '%s' at path '%s' using trusted headers '%v'\n", conf.Address, conf.Path, conf.TrustedHeaders)
-		err := httpServer.ListenAndServe()
-		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("could not start server: %v", err)
+		errChan <- server.ListenAndServe()
+	}()
+
+	select {
+	case err := <-errChan:
+		if !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("could not serve metrics: %v", err)
 		}
+	case <-ctx.Done():
+		log.Println("Shutting down app server")
+		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+		defer cancel()
+		server.Shutdown(ctx)
+		wg.Done()
+	}
+}
+
+func serveMetrics(ctx context.Context, wg *sync.WaitGroup, conf *Conf) {
+	log.Printf("Starting metrics server at '%s'\n", conf.MetricsAddr)
+	wg.Add(1)
+
+	mux := http.NewServeMux()
+	mux.Handle("/metrics", promhttp.Handler())
+	server := http.Server{
+		Addr:              conf.MetricsAddr,
+		Handler:           mux,
+		ReadTimeout:       time.Duration(conf.ReadTimeout) * time.Second,
+		WriteTimeout:      time.Duration(conf.WriteTimeout) * time.Second,
+		IdleTimeout:       time.Duration(conf.IdleTimeout) * time.Second,
+		ReadHeaderTimeout: time.Duration(conf.ReadHeaderTimeout) * time.Second,
+	}
+
+	errChan := make(chan error)
+	go func() {
+		errChan <- server.ListenAndServe()
+	}()
+
+	select {
+	case err := <-errChan:
+		if !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("could not serve metrics: %v", err)
+		}
+	case <-ctx.Done():
+		log.Println("Shutting down metrics server")
+		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+		defer cancel()
+		server.Shutdown(ctx)
+		wg.Done()
+	}
+}
+
+func main() {
+	conditionalPrintVersion()
+
+	log.Printf("ip-plz, version %s (%s)", BuildVersion, CommitHash)
+	conf := ParseConf()
+
+	wg := &sync.WaitGroup{}
+	ctx, cancel := context.WithCancel(context.Background())
+	if len(conf.MetricsAddr) > 0 {
+		go serveMetrics(ctx, wg, conf)
+	}
+
+	ipPlz := NewIpPlz(conf.TrustedHeaders)
+	go func() {
+		serveApp(ctx, wg, conf, ipPlz)
 	}()
 
 	done := make(chan os.Signal, 1)
@@ -173,10 +159,16 @@ func main() {
 	<-done
 
 	log.Println("Caught signal, quitting gracefully")
-	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(5*time.Second))
-	defer cancel()
-	err := httpServer.Shutdown(ctx)
-	if !errors.Is(err, http.ErrServerClosed) {
-		log.Fatalf("server could not shut down properly: %v", err)
+	cancel()
+	wg.Wait()
+	log.Println("Bye!")
+}
+
+func conditionalPrintVersion() {
+	version := flag.Bool("version", false, "print version info")
+	flag.Parse()
+	if *version {
+		fmt.Println(BuildVersion)
+		os.Exit(0)
 	}
 }
