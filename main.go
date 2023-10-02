@@ -5,10 +5,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/caarlos0/env/v6"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promauto"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net"
 	"net/http"
@@ -16,6 +12,11 @@ import (
 	"os/signal"
 	"strings"
 	"time"
+
+	"github.com/caarlos0/env/v6"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -91,18 +92,34 @@ func (b *IpPlz) detectIp(w http.ResponseWriter, req *http.Request) {
 	requestsTotal.Inc()
 	requestsTimestamp.SetToCurrentTime()
 	pubIp := b.getIp(req)
-	w.Write([]byte(pubIp))
+	_, err := w.Write([]byte(pubIp))
+	if err != nil {
+		log.Printf("detectIp: error writing to writer: %v", err)
+	}
 }
 
 func (b *IpPlz) healthcheckHandler(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte("pong"))
+	_, err := w.Write([]byte("pong"))
+	if err != nil {
+		log.Printf("healthcheckHandler: error writing to writer: %v", err)
+	}
 }
 
 func serveMetrics(addr string) {
-	log.Printf("Serving metrics at '%s'\n", addr)
-	http.Handle("/metrics", promhttp.Handler())
-	err := http.ListenAndServe(addr, nil)
-	if err != nil {
+	log.Printf("Serving metrics server at '%s'\n", addr)
+	mux := http.NewServeMux()
+	mux.Handle("/metrics", promhttp.Handler())
+	server := http.Server{
+		Addr:              addr,
+		Handler:           mux,
+		ReadTimeout:       2 * time.Second,
+		ReadHeaderTimeout: 2 * time.Second,
+		WriteTimeout:      2 * time.Second,
+		IdleTimeout:       2 * time.Second,
+	}
+
+	err := server.ListenAndServe()
+	if !errors.Is(err, http.ErrServerClosed) {
 		log.Fatalf("could not serve metrics: %v", err)
 	}
 }
@@ -156,6 +173,10 @@ func main() {
 	<-done
 
 	log.Println("Caught signal, quitting gracefully")
-	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(5*time.Second))
-	httpServer.Shutdown(ctx)
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(5*time.Second))
+	defer cancel()
+	err := httpServer.Shutdown(ctx)
+	if !errors.Is(err, http.ErrServerClosed) {
+		log.Fatalf("server could not shut down properly: %v", err)
+	}
 }
