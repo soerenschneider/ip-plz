@@ -1,3 +1,5 @@
+//go:build app
+
 package main
 
 import (
@@ -6,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -65,6 +68,51 @@ func ParseConf() *Conf {
 		log.Fatalf("could not parse conf: %v", err)
 	}
 	return conf
+}
+
+type IpPlz struct {
+	headers []string
+}
+
+func NewIpPlz(trustedHeaders []string) *IpPlz {
+	return &IpPlz{
+		headers: trustedHeaders,
+	}
+}
+
+func (b *IpPlz) getIp(req *http.Request) string {
+	for _, h := range b.headers {
+		for _, ip := range strings.Split(req.Header.Get(h), ",") {
+			pubIp, err := GetPublicIp(ip)
+			if err == nil {
+				return pubIp
+			}
+		}
+	}
+
+	host, _, err := net.SplitHostPort(req.RemoteAddr)
+	if err == nil {
+		return host
+	}
+
+	return req.RemoteAddr
+}
+
+func (b *IpPlz) detectIp(w http.ResponseWriter, req *http.Request) {
+	requestsTotal.Inc()
+	requestsTimestamp.SetToCurrentTime()
+	pubIp := b.getIp(req)
+	_, err := w.Write([]byte(pubIp))
+	if err != nil {
+		log.Printf("detectIp: error writing to writer: %v", err)
+	}
+}
+
+func (b *IpPlz) healthcheckHandler(w http.ResponseWriter, req *http.Request) {
+	_, err := w.Write([]byte("pong"))
+	if err != nil {
+		log.Printf("healthcheckHandler: error writing to writer: %v", err)
+	}
 }
 
 func serveApp(ctx context.Context, wg *sync.WaitGroup, conf *Conf, ipPlz *IpPlz) {
