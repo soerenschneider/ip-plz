@@ -1,8 +1,14 @@
 FROM golang:1.21.1 as builder
+
 ENV MODULE=github.com/soerenschneider/ip-plz
+ENV CGO_ENABLED=0
+
 WORKDIR /build/
+ADD go.mod go.sum /build/
+RUN go mod download
 ADD . /build/
-RUN go build -ldflags="-X $MODULE/internal.BuildVersion=$(git describe --tags --abbrev=0 || echo dev) -X $MODULE/internal.CommitHash=$(git rev-parse HEAD)" -o "ip-plz" main.go
+
+RUN go build -tags app -ldflags="-X $MODULE/internal.BuildVersion=$(git describe --tags --abbrev=0 || echo dev) -X $MODULE/internal.CommitHash=$(git rev-parse HEAD)" -o "ip-plz"
 
 FROM gcr.io/distroless/base
 COPY --from=builder "/build/ip-plz" /ip-plz
