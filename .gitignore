@@ -3,3 +3,6 @@
 /builds
 *.zip
 /bootstrap
+**/.terraform/*
+*.tfstate
+*.tfstate.*
