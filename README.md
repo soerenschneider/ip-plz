@@ -10,30 +10,43 @@ ip-plz is a tiny HTTP API that returns caller's public IP address
 
 ✉️ Returns the caller's **public** IP<br/>
 🔀 Reverse-proxy support with configurable trusted headers<br/>
+🚀 Deploy as container, AWS lambda or traditional binary<br/>
 📦 Zero configuration and works out of the box with secure defaults<br/>
 🪶 Lightweight and almost no dependencies<br/>
 🔭 Observability using metrics<br/>
 
 ## Installation
 
+### AWS Lambda
+Run the `lambda` Makefile target to build an archive for the `provided.al2` runtime and the `arm64` architecture. Either
+create a Lambda using AWS cli / Console or run the Terraform code to create an API Gateway instance and Lambda function.
+
+```shell
+$ make lambda
+$ terraform -chdir=deployment/terraform/envs/dev apply
+$ curl $(terraform -chdir=tf output --raw api_gateway_invoke_url)v1/ip
+```
+
 ### Docker / Podman
-````shell
+```shell
 $ docker run -d -p 8080:8080 ghcr.io/soerenschneider/ip-plz
 $ curl localhost:8080/ip-plz
-````
+```
 
 ### Binaries
 Head to the [releases section](https://github.com/soerenschneider/ip-plz/releases) and download the correct binary for your system.
 
 ### From Source
-As a prerequesite, you need to have [Golang SDK](https://go.dev/dl/) installed. After that, you can install ip-plz from source by invoking:
+As a prerequisite, you need to have [Golang SDK](https://go.dev/dl/) installed. After that, you can install ip-plz from source by invoking:
 ```text
 $ go install github.com/soerenschneider/ip-plz@latest
 ```
 
 ## Configuration
 
-ip-plz is configured via environment variables only. The following configuration reference shows configurable options.
+Configuration is only available when not deploying via Lambda. ip-plz is configured via environment variables only.
+
+Configuration reference:
 
 | Field Name        | Type      | Environment Variable       | Description                                                                                              | Default Value |
 |-------------------|-----------|----------------------------|----------------------------------------------------------------------------------------------------------|---------------|
