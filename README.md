@@ -42,6 +42,12 @@ As a prerequisite, you need to have [Golang SDK](https://go.dev/dl/) installed. 
 $ go install github.com/soerenschneider/ip-plz@latest
 ```
 
+## Example
+```shell
+$ curl https://dtp9iioxbc.execute-api.us-east-1.amazonaws.com/prod/ip
+178.200.50.73
+```
+
 ## Configuration
 
 Configuration is only available when not deploying via Lambda. ip-plz is configured via environment variables only.
