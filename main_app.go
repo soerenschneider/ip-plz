@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"flag"
 	"fmt"
@@ -49,6 +50,8 @@ type Conf struct {
 	WriteTimeout      int      `env:"IP_PLZ_WRITE_TIMEOUT"`
 	IdleTimeout       int      `env:"IP_PLZ_IDLE_TIMEOUT"`
 	ReadHeaderTimeout int      `env:"IP_PLZ_READ_HEADER_TIMEOUT"`
+	TlsCertFile       string   `env:"IP_PLZ_TLS_CERT_FILE"`
+	TlsKeyFile        string   `env:"IP_PLZ_TLS_KEY_FILE"`
 }
 
 func defaultConf() *Conf {
@@ -61,6 +64,18 @@ func defaultConf() *Conf {
 		IdleTimeout:       5,
 		ReadHeaderTimeout: 2,
 	}
+}
+
+func (c *Conf) loadCert(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
+	if len(c.TlsCertFile) == 0 || len(c.TlsKeyFile) == 0 {
+		return nil, errors.New("no client certificates defined")
+	}
+
+	certificate, err := tls.LoadX509KeyPair(c.TlsCertFile, c.TlsKeyFile)
+	if err != nil {
+		slog.Error("user-defined client certificates could not be loaded", "error", err)
+	}
+	return &certificate, err
 }
 
 func ParseConf() *Conf {
@@ -124,6 +139,19 @@ func serveApp(ctx context.Context, wg *sync.WaitGroup, conf *Conf, ipPlz *IpPlz)
 	mux.HandleFunc(conf.Path, ipPlz.detectIp)
 	mux.HandleFunc("/health", ipPlz.healthcheckHandler)
 
+	var tlsConfig *tls.Config
+	useTls := len(conf.TlsCertFile) > 0 && len(conf.TlsKeyFile) > 0
+	if useTls {
+		tlsConfig = &tls.Config{
+			MinVersion: tls.VersionTLS13,
+		}
+		tlsConfig.GetCertificate = conf.loadCert
+		_, err := conf.loadCert(nil)
+		if err != nil {
+			log.Fatalf("tls keypair was defined but could not be loaded: %v", err)
+		}
+	}
+
 	server := &http.Server{
 		Addr:              conf.Address,
 		Handler:           mux,
@@ -131,11 +159,16 @@ func serveApp(ctx context.Context, wg *sync.WaitGroup, conf *Conf, ipPlz *IpPlz)
 		WriteTimeout:      time.Duration(conf.WriteTimeout) * time.Second,
 		IdleTimeout:       time.Duration(conf.IdleTimeout) * time.Second,
 		ReadHeaderTimeout: time.Duration(conf.ReadHeaderTimeout) * time.Second,
+		TLSConfig:         tlsConfig,
 	}
 
 	errChan := make(chan error)
 	go func() {
-		errChan <- server.ListenAndServe()
+		if useTls {
+			errChan <- server.ListenAndServeTLS("", "")
+		} else {
+			errChan <- server.ListenAndServe()
+		}
 	}()
 
 	select {
