@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/soerenschneider/ip-plz/compare/v1.2.0...v1.3.0) (2024-01-15)
+
+
+### Features
+
+* serve https ([801386b](https://github.com/soerenschneider/ip-plz/commit/801386bdd426869a41a411a2244656c0f6e9f5d3))
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/aws/aws-lambda-go from 1.41.0 to 1.43.0 ([f21ee24](https://github.com/soerenschneider/ip-plz/commit/f21ee2422a2324fe1ccea12838f49a25173da72e))
+* **deps:** bump github.com/aws/aws-lambda-go from 1.43.0 to 1.44.0 ([6f09c52](https://github.com/soerenschneider/ip-plz/commit/6f09c52e48c3c9b3c412850f59ac681d912e8136))
+* **deps:** bump github.com/prometheus/client_golang ([8e3d373](https://github.com/soerenschneider/ip-plz/commit/8e3d373f114f826cb2dc79a2ad18d2bd22be71d2))
+* **deps:** bump golang from 1.21.3 to 1.21.5 ([3df2fcd](https://github.com/soerenschneider/ip-plz/commit/3df2fcdf0cfc9f6c610cdb0ebfd7334a4a5f68c0))
+* **deps:** bump golang from 1.21.5 to 1.21.6 ([d4d0533](https://github.com/soerenschneider/ip-plz/commit/d4d053316b16fccd64fa37817e45d0eed2c8e518))
+
 ## [1.2.0](https://github.com/soerenschneider/ip-plz/compare/v1.1.0...v1.2.0) (2023-10-03)
 
 
