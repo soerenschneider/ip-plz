@@ -54,16 +54,16 @@ Configuration is only available when not deploying via Lambda. ip-plz is configu
 
 Configuration reference:
 
-| Field Name        | Type      | Environment Variable       | Description                                                                                              | Default Value |
-|-------------------|-----------|----------------------------|----------------------------------------------------------------------------------------------------------|---------------|
-| MetricsAddr       | string    | IP_PLZ_METRICS_ADDR        | The address for serving metrics.                                                                         | ":9191"       |
-| Path              | string    | IP_PLZ_PATH                | The path where the service is available.                                                                 | "/ip-plz"     |
-| Address           | string    | IP_PLZ_ADDR                | The network address to bind the service to.                                                              | ":8080"       |
-| TrustedHeaders    | []string  | IP_PLZ_TRUSTED_HEADERS     | A list of trusted HTTP headers (comma-separated in the environment).                                     | -             |
-| ReadTimeout       | int       | IP_PLZ_READ_TIMEOUT        | Maximum duration for reading the entire request, in seconds.                                             | 1 second      |
-| WriteTimeout      | int       | IP_PLZ_WRITE_TIMEOUT       | Maximum duration for writing the response back to the client, in seconds.                                | 1 second      |
-| IdleTimeout       | int       | IP_PLZ_IDLE_TIMEOUT        | Maximum duration the server should wait for the next request when no connections are active, in seconds. | 5 seconds     |
-| ReadHeaderTimeout | int       | IP_PLZ_READ_HEADER_TIMEOUT | Maximum duration for reading the request headers, in seconds.                                            | 2 seconds     |
+| Field Name        | Type      | Environment Variable       | Description                                                                                              | Default Value    |
+|-------------------|-----------|----------------------------|----------------------------------------------------------------------------------------------------------|------------------|
+| MetricsAddr       | string    | IP_PLZ_METRICS_ADDR        | The address for serving metrics.                                                                         | "127.0.0.1:9191" |
+| Path              | string    | IP_PLZ_PATH                | The path where the service is available.                                                                 | "/ip-plz"        |
+| Address           | string    | IP_PLZ_ADDR                | The network address to bind the service to.                                                              | ":8080"          |
+| TrustedHeaders    | []string  | IP_PLZ_TRUSTED_HEADERS     | A list of trusted HTTP headers (comma-separated in the environment).                                     | -                |
+| ReadTimeout       | int       | IP_PLZ_READ_TIMEOUT        | Maximum duration for reading the entire request, in seconds.                                             | 1 second         |
+| WriteTimeout      | int       | IP_PLZ_WRITE_TIMEOUT       | Maximum duration for writing the response back to the client, in seconds.                                | 1 second         |
+| IdleTimeout       | int       | IP_PLZ_IDLE_TIMEOUT        | Maximum duration the server should wait for the next request when no connections are active, in seconds. | 5 seconds        |
+| ReadHeaderTimeout | int       | IP_PLZ_READ_HEADER_TIMEOUT | Maximum duration for reading the request headers, in seconds.                                            | 2 seconds        |
 
 ## Metrics
 
