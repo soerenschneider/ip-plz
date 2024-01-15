@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"log/slog"
 	"net"
 	"net/http"
 	"os"
@@ -104,19 +105,19 @@ func (b *IpPlz) detectIp(w http.ResponseWriter, req *http.Request) {
 	pubIp := b.getIp(req)
 	_, err := w.Write([]byte(pubIp))
 	if err != nil {
-		log.Printf("detectIp: error writing to writer: %v", err)
+		slog.Error("detectIp: error writing to writer", "error", err)
 	}
 }
 
 func (b *IpPlz) healthcheckHandler(w http.ResponseWriter, req *http.Request) {
 	_, err := w.Write([]byte("pong"))
 	if err != nil {
-		log.Printf("healthcheckHandler: error writing to writer: %v", err)
+		slog.Error("healthcheckHandler: error writing to writer", "error", err)
 	}
 }
 
 func serveApp(ctx context.Context, wg *sync.WaitGroup, conf *Conf, ipPlz *IpPlz) {
-	log.Printf("Starting server on '%s' at path '%s' using trusted headers '%v'\n", conf.Address, conf.Path, conf.TrustedHeaders)
+	slog.Info("Starting ip-plz server", "address", conf.Address, "path", conf.Path, "trusted headers", conf.TrustedHeaders)
 	wg.Add(1)
 
 	mux := http.NewServeMux()
@@ -143,7 +144,7 @@ func serveApp(ctx context.Context, wg *sync.WaitGroup, conf *Conf, ipPlz *IpPlz)
 			log.Fatalf("could not serve metrics: %v", err)
 		}
 	case <-ctx.Done():
-		log.Println("Shutting down app server")
+		slog.Info("Shutting down app server")
 		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 		defer cancel()
 		server.Shutdown(ctx)
@@ -152,7 +153,7 @@ func serveApp(ctx context.Context, wg *sync.WaitGroup, conf *Conf, ipPlz *IpPlz)
 }
 
 func serveMetrics(ctx context.Context, wg *sync.WaitGroup, conf *Conf) {
-	log.Printf("Starting metrics server at '%s'\n", conf.MetricsAddr)
+	slog.Info("Starting metrics server", "addr", conf.MetricsAddr)
 	wg.Add(1)
 
 	mux := http.NewServeMux()
@@ -177,7 +178,7 @@ func serveMetrics(ctx context.Context, wg *sync.WaitGroup, conf *Conf) {
 			log.Fatalf("could not serve metrics: %v", err)
 		}
 	case <-ctx.Done():
-		log.Println("Shutting down metrics server")
+		slog.Info("Shutting down metrics server")
 		ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 		defer cancel()
 		server.Shutdown(ctx)
@@ -188,7 +189,7 @@ func serveMetrics(ctx context.Context, wg *sync.WaitGroup, conf *Conf) {
 func main() {
 	conditionalPrintVersion()
 
-	log.Printf("ip-plz, version %s (%s)", BuildVersion, CommitHash)
+	slog.Info("ip-plz", "version", BuildVersion, "commit", CommitHash)
 	conf := ParseConf()
 
 	wg := &sync.WaitGroup{}
@@ -206,10 +207,10 @@ func main() {
 	signal.Notify(done, os.Interrupt)
 	<-done
 
-	log.Println("Caught signal, quitting gracefully")
+	slog.Info("Caught signal, quitting gracefully")
 	cancel()
 	wg.Wait()
-	log.Println("Bye!")
+	slog.Info("Bye!")
 }
 
 func conditionalPrintVersion() {
