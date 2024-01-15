@@ -58,7 +58,7 @@ func defaultConf() *Conf {
 	return &Conf{
 		Path:              "/ip-plz",
 		Address:           ":8080",
-		MetricsAddr:       ":9191",
+		MetricsAddr:       "127.0.0.1:9191",
 		ReadTimeout:       1,
 		WriteTimeout:      1,
 		IdleTimeout:       5,
