@@ -3,7 +3,7 @@ module github.com/soerenschneider/ip-plz
 go 1.19
 
 require (
-	github.com/aws/aws-lambda-go v1.44.0
+	github.com/aws/aws-lambda-go v1.45.0
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/prometheus/client_golang v1.18.0
 )
