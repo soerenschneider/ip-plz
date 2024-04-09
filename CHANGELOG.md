@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/soerenschneider/ip-plz/compare/v1.3.0...v1.3.1) (2024-04-09)
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/aws/aws-lambda-go from 1.44.0 to 1.46.0 ([62b19a7](https://github.com/soerenschneider/ip-plz/commit/62b19a7d3f3077c079ce4f0444b692b1e6f975b0))
+* **deps:** bump github.com/prometheus/client_golang ([fc56447](https://github.com/soerenschneider/ip-plz/commit/fc564478879cea87850e817e899ad894b76e8135))
+
 ## [1.3.0](https://github.com/soerenschneider/ip-plz/compare/v1.2.0...v1.3.0) (2024-01-15)
 
 
