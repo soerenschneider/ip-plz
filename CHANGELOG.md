@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.1](https://github.com/soerenschneider/ip-plz/compare/v1.3.0...v1.3.1) (2024-06-03)
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/aws/aws-lambda-go from 1.44.0 to 1.46.0 ([62b19a7](https://github.com/soerenschneider/ip-plz/commit/62b19a7d3f3077c079ce4f0444b692b1e6f975b0))
+* **deps:** bump github.com/aws/aws-lambda-go from 1.46.0 to 1.47.0 ([3281878](https://github.com/soerenschneider/ip-plz/commit/3281878c7919b946399759c3f512dcd3db7a5f92))
+* **deps:** bump github.com/prometheus/client_golang ([0722cec](https://github.com/soerenschneider/ip-plz/commit/0722cec9613921be8e35f82ad912d6363f842567))
+* **deps:** bump github.com/prometheus/client_golang ([fc56447](https://github.com/soerenschneider/ip-plz/commit/fc564478879cea87850e817e899ad894b76e8135))
+* **deps:** bump golang from 1.21.6 to 1.22.2 ([4a1b08b](https://github.com/soerenschneider/ip-plz/commit/4a1b08b13155b00bab74586dc4b7f07095964a96))
+* **deps:** bump golang from 1.22.2 to 1.22.3 ([a7db6e7](https://github.com/soerenschneider/ip-plz/commit/a7db6e7c6b41db4a0d6960e9e31f39d90d29bc45))
+* **deps:** bump google.golang.org/protobuf from 1.31.0 to 1.33.0 ([388c8e3](https://github.com/soerenschneider/ip-plz/commit/388c8e37e77530a6f4d561926eae60422630f7c1))
+
 ## [1.3.0](https://github.com/soerenschneider/ip-plz/compare/v1.2.0...v1.3.0) (2024-01-15)
 
 
