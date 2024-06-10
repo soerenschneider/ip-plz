@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/soerenschneider/ip-plz/compare/v1.3.1...v1.3.2) (2024-06-10)
+
+
+### Bug Fixes
+
+* **deps:** bump golang from 1.22.3 to 1.22.4 ([9bf7c31](https://github.com/soerenschneider/ip-plz/commit/9bf7c319f494e6dec762481db31bb86c5c2d751b))
+
 ## [1.3.1](https://github.com/soerenschneider/ip-plz/compare/v1.3.0...v1.3.1) (2024-06-03)
 
 
