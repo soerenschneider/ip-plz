@@ -1,4 +1,4 @@
-FROM golang:1.22.4 as builder
+FROM golang:1.22.5 as builder
 
 ENV MODULE=github.com/soerenschneider/ip-plz
 ENV CGO_ENABLED=0
