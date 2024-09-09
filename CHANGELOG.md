@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.2](https://github.com/soerenschneider/ip-plz/compare/v1.3.1...v1.3.2) (2024-09-09)
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/prometheus/client_golang ([5428ce8](https://github.com/soerenschneider/ip-plz/commit/5428ce8ae37ca46e7ebe456539b4469b91823643))
+* **deps:** bump golang from 1.22.3 to 1.22.4 ([9bf7c31](https://github.com/soerenschneider/ip-plz/commit/9bf7c319f494e6dec762481db31bb86c5c2d751b))
+* **deps:** bump golang from 1.22.4 to 1.22.5 ([8cff055](https://github.com/soerenschneider/ip-plz/commit/8cff0556fd596a561a6ecb63be28646ee484be58))
+* **deps:** bump golang from 1.22.5 to 1.23.1 ([c7df3af](https://github.com/soerenschneider/ip-plz/commit/c7df3afbb532e9c1ca34dc6a7c360e75ccab2f65))
+
 ## [1.3.1](https://github.com/soerenschneider/ip-plz/compare/v1.3.0...v1.3.1) (2024-06-03)
 
 
