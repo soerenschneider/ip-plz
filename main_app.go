@@ -39,6 +39,11 @@ var (
 		Name:      "most_recent_request_timestamp_seconds",
 		Help:      "Timestamp of the most recent request received",
 	})
+	version = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace: strings.Replace(appName, "-", "_", -1),
+		Name:      "version",
+		Help:      "Version of ip-plz",
+	}, []string{"version"})
 )
 
 type Conf struct {
@@ -221,6 +226,7 @@ func serveMetrics(ctx context.Context, wg *sync.WaitGroup, conf *Conf) {
 
 func main() {
 	conditionalPrintVersion()
+	version.WithLabelValues(BuildVersion).Set(1)
 
 	slog.Info("ip-plz", "version", BuildVersion, "commit", CommitHash)
 	conf := ParseConf()
