@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/soerenschneider/ip-plz/compare/v1.3.2...v1.4.0) (2025-02-19)
+
+
+### Features
+
+* expose version via metrics ([c38060b](https://github.com/soerenschneider/ip-plz/commit/c38060b2705906f74d71b0fe449745d7816d8ded))
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/prometheus/client_golang ([2b5788b](https://github.com/soerenschneider/ip-plz/commit/2b5788b86137c9472f5660d2419ef46e549a90b7))
+* **deps:** bump golang from 1.23.1 to 1.23.4 ([59a8b71](https://github.com/soerenschneider/ip-plz/commit/59a8b717a659c2a51a4c3849a63cd4e9020fa435))
+* **deps:** bump golang from 1.23.4 to 1.24.0 ([156560d](https://github.com/soerenschneider/ip-plz/commit/156560dce8ae157c6b923141d9ee4d356fdae5e9))
+
 ## [1.3.2](https://github.com/soerenschneider/ip-plz/compare/v1.3.1...v1.3.2) (2024-09-09)
 
 
