@@ -18,7 +18,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/caarlos0/env/v6"
+	"github.com/caarlos0/env/v11"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
