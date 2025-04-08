@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/soerenschneider/ip-plz/compare/v1.4.0...v1.4.1) (2025-04-08)
+
+
+### Bug Fixes
+
+* **deps:** bump golang from 1.24.0 to 1.24.2 ([f38e999](https://github.com/soerenschneider/ip-plz/commit/f38e9995794f1dc88a50dbb1af77f5219b5cd336))
+
 ## [1.4.0](https://github.com/soerenschneider/ip-plz/compare/v1.3.2...v1.4.0) (2025-02-19)
 
 
