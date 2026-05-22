@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.5.0](https://github.com/soerenschneider/ip-plz/compare/v1.4.0...v1.5.0) (2026-05-22)
+
+
+### Features
+
+* rate-limit endpoints ([178001c](https://github.com/soerenschneider/ip-plz/commit/178001c6916b03f19058239e60214f17b23354fd))
+* support for named clients ([10e54f5](https://github.com/soerenschneider/ip-plz/commit/10e54f527f9728a4f8081347176e20622ede2ae9))
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/aws/aws-lambda-go from 1.47.0 to 1.50.0 ([4bdec9b](https://github.com/soerenschneider/ip-plz/commit/4bdec9bd3cda970f4bd585294b8bdd1ec7c674b8))
+* **deps:** bump github.com/aws/aws-lambda-go from 1.47.0 to 1.50.0 ([af98f93](https://github.com/soerenschneider/ip-plz/commit/af98f9341904f3a15a0b5d11c004729de7334c49))
+* **deps:** bump github.com/prometheus/client_golang ([2107032](https://github.com/soerenschneider/ip-plz/commit/2107032d9ed4a8f8bd988e43d1806be8c5fec565))
+* **deps:** bump github.com/prometheus/client_golang from 1.22.0 to 1.23.2 ([c29b994](https://github.com/soerenschneider/ip-plz/commit/c29b994c51f130dc0a3334d848844277d04f8fcc))
+* **deps:** bump golang from 1.24.0 to 1.24.2 ([44c9ab2](https://github.com/soerenschneider/ip-plz/commit/44c9ab20e76cc79b5aa74887fdd474c1c6e461cd))
+* **deps:** bump golang from 1.24.0 to 1.24.2 ([f38e999](https://github.com/soerenschneider/ip-plz/commit/f38e9995794f1dc88a50dbb1af77f5219b5cd336))
+* **deps:** bump golang from 1.24.2 to 1.25.4 ([4a9c4e0](https://github.com/soerenschneider/ip-plz/commit/4a9c4e09fbd120426b5967ba1ef49125793c73eb))
+* **deps:** bump golang from 1.24.2 to 1.25.4 ([d28b377](https://github.com/soerenschneider/ip-plz/commit/d28b377e6b600cd80d4d06116621ee1a7490f724))
+* fix missing method ([b1f09de](https://github.com/soerenschneider/ip-plz/commit/b1f09ded5275ca11ca340f12e463f738052e5533))
+
 ## [1.4.0](https://github.com/soerenschneider/ip-plz/compare/v1.3.2...v1.4.0) (2025-02-19)
 
 
