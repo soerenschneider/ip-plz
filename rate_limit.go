@@ -1,3 +1,5 @@
+//go:build app
+
 package main
 
 import (
