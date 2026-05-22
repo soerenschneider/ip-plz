@@ -337,8 +337,8 @@ func serveApp(ctx context.Context, wg *sync.WaitGroup, conf *Conf, ipPlz *IpPlz)
 	wg.Add(1)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc(fmt.Sprintf("GET %s", conf.Path), ipPlz.detectIp)
-	mux.HandleFunc(fmt.Sprintf("GET %s/{id}", conf.Path), ipPlz.detectIp)
+	mux.HandleFunc(fmt.Sprintf("GET %s", conf.Path), rateLimitMiddleware(ipPlz.detectIp))
+	mux.HandleFunc(fmt.Sprintf("GET %s/{id}", conf.Path), rateLimitMiddleware(ipPlz.detectIp))
 	mux.HandleFunc("/health", ipPlz.healthcheckHandler)
 
 	var tlsConfig *tls.Config
