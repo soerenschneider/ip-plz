@@ -1,12 +1,12 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base",
     ":rebaseStalePrs",
     ":semanticCommitTypeAll(fix)"
   ],
   "packageRules": [
-      {
+    {
       "description": "Allow automerge for GitHub Actions updates",
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch"],
