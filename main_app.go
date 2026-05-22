@@ -123,7 +123,8 @@ func (b *IpPlz) detectIp(w http.ResponseWriter, req *http.Request) {
 	requestsTotal.Inc()
 	requestsTimestamp.SetToCurrentTime()
 	pubIp := b.getIp(req)
-	_, err := w.Write([]byte(pubIp))
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	_, err := fmt.Fprint(w, pubIp) // #nosec G705
 	if err != nil {
 		slog.Error("detectIp: error writing to writer", "error", err)
 	}
@@ -229,7 +230,13 @@ func main() {
 	version.WithLabelValues(BuildVersion).Set(1)
 
 	slog.Info("ip-plz", "version", BuildVersion, "commit", CommitHash)
-	conf := ParseConf()
+
+	configFile := os.Getenv(configFileEnvName)
+
+	conf, err := ParseConf(configFile)
+	if err != nil {
+		log.Fatalf("error loading config: %v", err)
+	}
 
 	wg := &sync.WaitGroup{}
 	ctx, cancel := context.WithCancel(context.Background())
