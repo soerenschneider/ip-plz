@@ -125,6 +125,15 @@ func (s *NamedClientStore) Get(key string) (*NamedClient, bool) {
 	return &cp, true
 }
 
+func (s *NamedClientStore) Each(fn func(key string, client NamedClient)) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	for k, v := range s.cache {
+		fn(k, *v) // pass a copy so fn cannot mutate cached state
+	}
+}
+
 func (s *NamedClientStore) Has(key string) bool {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
