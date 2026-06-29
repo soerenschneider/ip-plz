@@ -70,12 +70,18 @@ var (
 		Name:      "requests_total",
 		Help:      "The total number of processed requests for named clients",
 	})
-	namedClientUnknownRequestsTotal = promauto.NewCounter(prometheus.CounterOpts{
+	namedClientSuccessfulRequestsTotal = promauto.NewCounterVec(prometheus.CounterOpts{
 		Namespace: strings.ReplaceAll(appName, "-", "_"),
 		Subsystem: "named_clients",
-		Name:      "unknown_requests_total",
-		Help:      "The total number of unknown requests for named clients",
-	})
+		Name:      "successful_requests_total",
+		Help:      "The total number of successful requests for named clients",
+	}, []string{"client"})
+	namedClientLastSuccessfulRequestsTimestamp = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace: strings.ReplaceAll(appName, "-", "_"),
+		Subsystem: "named_clients",
+		Name:      "successful_requests_timestamp",
+		Help:      "The timestamp of the last successful requests for named clients",
+	}, []string{"client"})
 	requestsTimestamp = promauto.NewGauge(prometheus.GaugeOpts{
 		Namespace: strings.ReplaceAll(appName, "-", "_"),
 		Name:      "most_recent_request_timestamp_seconds",
@@ -246,18 +252,19 @@ func (b *IpPlz) detectIp(w http.ResponseWriter, req *http.Request) {
 
 		if clientId != "" {
 			namedClientRequestsTotal.Inc()
-			foundClient := false
+
 			for _, key := range b.namedClients.Keys() {
 				if subtle.ConstantTimeCompare([]byte(clientId), []byte(key)) == 1 {
-					foundClient = true
+					client, _ := b.namedClients.Get(key)
+					if client != nil {
+						namedClientSuccessfulRequestsTotal.WithLabelValues(client.Name).Inc()
+						namedClientLastSuccessfulRequestsTimestamp.WithLabelValues(client.Name).SetToCurrentTime()
+					}
+
 					if err := b.namedClients.UpdateIp(key, pubIp); err != nil {
-						slog.Error("could not update ip for client", "err", err)
+						slog.Error("could not update ip for client", "err", err, "client", client.Name)
 					}
 				}
-			}
-
-			if !foundClient {
-				namedClientUnknownRequestsTotal.Inc()
 			}
 		}
 	}
