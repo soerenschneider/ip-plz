@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.1](https://github.com/soerenschneider/ip-plz/compare/v1.5.0...v1.5.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* **deps:** update actions/checkout action to v4.3.1 ([#189](https://github.com/soerenschneider/ip-plz/issues/189)) ([229b79b](https://github.com/soerenschneider/ip-plz/commit/229b79b8fd4be8629c742ee5da6bb7aee0ac130e))
+* **deps:** update actions/checkout action to v4.4.0 ([#205](https://github.com/soerenschneider/ip-plz/issues/205)) ([4124c0a](https://github.com/soerenschneider/ip-plz/commit/4124c0ad32b344ffac74266c4224f8c33288fdc1))
+* **deps:** update actions/setup-go action to v5.6.0 ([#190](https://github.com/soerenschneider/ip-plz/issues/190)) ([8acb9a2](https://github.com/soerenschneider/ip-plz/commit/8acb9a2987803981c5ca486f006333fcb4522288))
+* **deps:** update dependency go to 1.27 ([#207](https://github.com/soerenschneider/ip-plz/issues/207)) ([99840db](https://github.com/soerenschneider/ip-plz/commit/99840db583c375c316e5514d8f397d55f7a76507))
+* **deps:** update docker/build-push-action action to v6.19.2 ([#191](https://github.com/soerenschneider/ip-plz/issues/191)) ([6360ba2](https://github.com/soerenschneider/ip-plz/commit/6360ba20494d896407e7f328a25e2afe849c5439))
+* **deps:** update docker/login-action action to v3.7.0 ([#192](https://github.com/soerenschneider/ip-plz/issues/192)) ([5692cc3](https://github.com/soerenschneider/ip-plz/commit/5692cc3515f8779fc0be3ff5f361b64b4d77743c))
+* **deps:** update docker/metadata-action action to v5.10.0 ([#193](https://github.com/soerenschneider/ip-plz/issues/193)) ([ea0836e](https://github.com/soerenschneider/ip-plz/commit/ea0836effd9d9dc2514511366b2088aadee04a71))
+* **deps:** update googlecloudplatform/release-please-action action to v4.4.1 ([#188](https://github.com/soerenschneider/ip-plz/issues/188)) ([4acce71](https://github.com/soerenschneider/ip-plz/commit/4acce71038a6df321fd10b12fe964f1a169ee764))
+
 ## [1.5.0](https://github.com/soerenschneider/ip-plz/compare/v1.4.0...v1.5.0) (2026-05-22)
 
 
