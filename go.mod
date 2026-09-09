@@ -1,12 +1,12 @@
 module github.com/soerenschneider/ip-plz
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/aws/aws-lambda-go v1.54.0
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/prometheus/client_golang v1.23.2
-	golang.org/x/time v0.15.0
+	golang.org/x/time v0.16.0
 )
 
 require (
